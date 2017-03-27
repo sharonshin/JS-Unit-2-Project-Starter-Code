@@ -2,6 +2,8 @@
   GA SF JSD6
   Sharon Shin
   Please add all Javascript code to this file.
+
+  Not used -- only one source. 
 */
 
 
@@ -14,6 +16,7 @@ var apiKey = "apiKey=b1d1f7d59bdc4ea295496c98926660a0";
 
 
 $.ajax({
+  
     url: newsUrl+apiKey,
     data: {
         format: 'json',
@@ -35,7 +38,6 @@ $.ajax({
     success: function(response){
 
 
-
   for(var i = 0; i<response.articles.length; i++){
 
         //create new article class
@@ -49,7 +51,7 @@ $.ajax({
         //create 2nd section in article - title link 
         var $articleContent = $('<section>').addClass('articleContent');
         //var newsLink = response.articles[i].url;
-        var newsLink = "";
+        var newsLink = "#";
         var $newsLink = $('<a href='+newsLink+'>'+'</a>');
         var title = response.articles[i].title;
         var $title = $('<h3>'+title+'</h3>');
@@ -68,29 +70,41 @@ $.ajax({
         $newArticle.append($clearDiv);
 
 
+
 }
+      //click on title results in popup (remove hidden loader class)
+    $('#main').click('articleContent',function(event){
+      event.preventDefault(); 
+      
+      $('#popUp').removeClass('loader hidden');
 
-$('articleContent').on('click', 'h3',function(event){
-  event.preventDefault();
+      //pop up content - title
+      $('#popUp .container h1').text($(event.target).text());
+
+      //pop up content - paragraph
+      var articleIndex = ($(event.target).index('h3'));
+      var description = response.articles[articleIndex].description;
+      $('#popUp .container p').text(description);
+
+      //pop up content - link
+      var articleUrl = response.articles[articleIndex].url;     
+      $('#popUp .popUpAction').click('popUpAction', function(event){
+        $('.popUpAction').attr('href',articleUrl);
+      });
+
+    })
+
+      // in pop up, click x to make pop up hidden. 
+    $('#popUp .closePopUp').click('closePopUp', function(event){
+      $('#popUp').addClass('loader hidden');
+    });
+
+    $('#search').click('search', function(event){
+      $('#search').toggleClass('active');
+    });
+
+
+}
 });
-
-
-
-    }
 });
-});
-
-/*
-        <div id="popUp" class="loader hidden">
-          <a href="#" class="closePopUp">X</a>
-          <div class="container">
-            <h1>Article title here</h1>
-            <p>
-              Article description/content here.
-            </p>
-            <a href="#" class="popUpAction" target="_blank">Read more from source</a>
-          </div>
-        </div>
-
-*/
 
